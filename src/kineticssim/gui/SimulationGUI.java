@@ -1,6 +1,8 @@
 package kineticssim.gui;
 import java.awt.BorderLayout;
 import java.awt.Graphics;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 
 import javax.swing.JFrame;
 
@@ -15,7 +17,7 @@ import kineticssim.KineticsSimulator;
 
 
 //Container class that contains the entire GUI
-public class SimulationGUI extends JFrame {
+public class SimulationGUI extends JFrame implements WindowListener {
 	private KineticsSimulator application;
 	private MoleculeRenderer renderer;
 	private int renderwidth = 1200;
@@ -82,6 +84,8 @@ public class SimulationGUI extends JFrame {
 	
 	//Intialize the GUi and set size
 	public SimulationGUI(KineticsSimulator parent) {
+		this.addWindowListener(this);
+		
 		application = parent;
 
 		this.setVisible(true);
@@ -113,4 +117,27 @@ public class SimulationGUI extends JFrame {
 	public MoleculeRenderer getRenderer() {
 		return this.renderer;
 	}
+
+	@Override
+	public void windowActivated(WindowEvent arg0) {}
+
+	@Override
+	public void windowClosed(WindowEvent arg0) {}
+
+	@Override
+	public void windowClosing(WindowEvent arg0) {
+		System.exit(0);
+	}
+
+	@Override
+	public void windowDeactivated(WindowEvent arg0) {}
+
+	@Override
+	public void windowDeiconified(WindowEvent arg0) {}
+
+	@Override
+	public void windowIconified(WindowEvent arg0) {}
+
+	@Override
+	public void windowOpened(WindowEvent arg0) {}
 }
