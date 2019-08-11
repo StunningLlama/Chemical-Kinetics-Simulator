@@ -51,7 +51,7 @@ import kineticssim.reactions.CompoundReaction;
 	A + B -> C + D
  */
 
-//wtf
+//wtf2
 //The window that allows you to add and modify reactions
 public class ReactionManager extends JFrame implements ActionListener, ListSelectionListener, ItemListener {
 	private JComboBox<String> reactiontype;
