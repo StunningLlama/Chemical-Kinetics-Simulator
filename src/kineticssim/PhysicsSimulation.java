@@ -214,14 +214,14 @@ public class PhysicsSimulation {
 					if ((m.getPosition().x - r) < boundTL.x) {
 						m.getPosition().x = boundTL.x + r;
 					}
-					//collided = true;
+					collided = true;
 				} else if ((m.getPosition().x + r) > boundBR.x) {
 					v.x = -Math.abs(v.x);
 					m.getPosition().x += v.x * timestep;
 					if ((m.getPosition().x + r) > boundBR.x) {
 						m.getPosition().x = boundBR.x - r;
 					}
-					//collided = true;
+					collided = true;
 				}
 				
 				if ((m.getPosition().y - r) < boundTL.y) {
@@ -230,14 +230,14 @@ public class PhysicsSimulation {
 					if ((m.getPosition().y - r) < boundTL.y) {
 						m.getPosition().y = boundTL.y + r;
 					}
-					//collided = true;
+					collided = true;
 				} else if ((m.getPosition().y + r) > boundBR.y) {
 					v.y = -Math.abs(v.y);
 					m.getPosition().y += v.y * timestep;
 					if ((m.getPosition().y + r) > boundBR.y) {
 						m.getPosition().y = boundBR.y - r;
 					}
-					//collided = true;
+					collided = true;
 				}
 				
 				/*if (collided)
@@ -248,7 +248,8 @@ public class PhysicsSimulation {
 				if (!sim.getGUI().getControlPanel().settemp.isSelected())
 					scalefactor = 1;
 				
-				m.setVelocity(v.mul(scalefactor));
+				if (collided)
+					m.setVelocity(v.mul(scalefactor));
 
 
 			}
@@ -265,10 +266,13 @@ public class PhysicsSimulation {
 
 			temperature = computetemperature();
 
-			scalefactor = Math.pow(targettemp/temperature, 0.04);
+			scalefactor = Math.pow(targettemp/temperature, 1.0);
 
-			if (!(scalefactor < 2.0 && scalefactor > 0.1))
-				scalefactor = 1.0;
+			if (scalefactor > 2.0)
+				scalefactor = 2.0;
+
+			if (scalefactor < 0.1)
+				scalefactor = 0.1;
 			
 
 			//This collects data for the graph of the concentration over time

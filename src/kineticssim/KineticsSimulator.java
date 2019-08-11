@@ -1,5 +1,6 @@
 package kineticssim;
 import java.awt.Color;
+import java.awt.Toolkit;
 
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;

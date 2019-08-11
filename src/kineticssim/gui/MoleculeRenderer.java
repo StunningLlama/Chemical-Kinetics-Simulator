@@ -109,7 +109,7 @@ public class MoleculeRenderer extends JPanel
 		/*********
 		 * ******
 		 */
-		simulation.getHistogram().draw(ggraph, simulation);
+		simulation.getHistogram().draw(ggraph, simulation, frame.getHistogramheight());
 		
 		Graphics gplot = img_graph.getGraphics();
 		gplot.setColor(Color.BLACK);
@@ -121,8 +121,8 @@ public class MoleculeRenderer extends JPanel
 		
 		
 		g.drawImage(img_particledisplay, 0, 0, this);
-		g.drawImage(img_distr, 0, 700, this);
-		g.drawImage(img_graph, 600, 700, this);
+		g.drawImage(img_distr, 0, frame.getRenderheight(), this);
+		g.drawImage(img_graph, frame.getHistogramwidth(), frame.getRenderheight(), this);
 		}
 	}
 }

@@ -50,7 +50,7 @@ public class Histogram {
 	}
 	
 	//Draws the histogram onto a Graphics object
-	public void draw(Graphics ggraph, PhysicsSimulation simulation) {
+	public void draw(Graphics ggraph, PhysicsSimulation simulation, int graphheight) {
 		int max = 10;
 		for (int i = 0; i < histogramsize; i++) {
 			if (histogram[i] > max) {
@@ -58,9 +58,7 @@ public class Histogram {
 			}
 		}
 		
-		
-		
-		int graphheight = 300;
+
 		
 		for (int i = 0; i < histogramsize; i++) {
 			ggraph.drawRect(i*20, graphheight - 150*histogram[i]/max, 20, 150*histogram[i]/max);

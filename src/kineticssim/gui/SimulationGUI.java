@@ -1,6 +1,7 @@
 package kineticssim.gui;
 import java.awt.BorderLayout;
 import java.awt.Graphics;
+import java.awt.Toolkit;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 
@@ -28,6 +29,15 @@ public class SimulationGUI extends JFrame implements WindowListener {
 	private int graphheight = 300;
 
 	//Various getters and setters
+	
+	public void set720p() {
+		renderwidth = 900;
+		renderheight = 525;
+		histogramwidth = 450;
+		histogramheight = 225;
+		graphwidth = 450;
+		graphheight = 225;
+	}
 	
 	public int getRenderwidth() {
 		return renderwidth;
@@ -84,17 +94,20 @@ public class SimulationGUI extends JFrame implements WindowListener {
 	
 	//Intialize the GUi and set size
 	public SimulationGUI(KineticsSimulator parent) {
+		if (Toolkit.getDefaultToolkit().getScreenSize().getHeight() <= 720)
+			set720p();
+		
 		this.addWindowListener(this);
 		
 		application = parent;
 
 		this.setVisible(true);
 		this.setTitle("Kinetics Simulator");
-		this.setSize(1800, 1080);
+		this.setSize(renderwidth + 600, renderheight + histogramheight + 40);
 		
 		this.setLayout(new BorderLayout());
 		renderer = new MoleculeRenderer(this);
-		renderer.setSize(1800, 1000);
+		renderer.setSize(renderwidth + 600, renderheight + histogramheight);
 		this.add(renderer, BorderLayout.WEST);
 		controlpanel = new ControlPanel(application);
 		this.add(controlpanel, BorderLayout.CENTER);
