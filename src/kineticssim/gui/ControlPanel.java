@@ -9,6 +9,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.image.BufferedImage;
 import java.util.Collection;
 import java.util.List;
 import java.util.Random;
@@ -30,7 +31,7 @@ import kineticssim.Particle;
 
 //The control panel is on the right and has sliders and buttons to control the simulation as well as information
 public class ControlPanel extends JPanel implements ActionListener, ItemListener {
-	JTextArea info;
+	//JTextArea info;
 	public JScrollBar temperature;
 	public JScrollBar timestep;
 	public JScrollBar datacollectioninterval;
@@ -50,6 +51,7 @@ public class ControlPanel extends JPanel implements ActionListener, ItemListener
 	JButton openEditor;
 	JButton closeEditor;
 	JSpinner number;
+	CompoundKey key;
 	public Choice c;
 	private KineticsSimulator sim;
 	public JCheckBox settemp;
@@ -58,9 +60,17 @@ public class ControlPanel extends JPanel implements ActionListener, ItemListener
 		sim = k;
 		JPanel p = new JPanel();
 		p.setLayout(new BoxLayout(p, BoxLayout.Y_AXIS));
-		info = new JTextArea("Hello");
-		info.setPreferredSize(new Dimension(300, 200));
-		p.add(info);
+		//info = new JTextArea("Hello");
+		//info.setPreferredSize(new Dimension(300, 200));
+		
+		JPanel ps = new JPanel();
+		ps.setLayout(new BoxLayout(ps, BoxLayout.Y_AXIS));
+		//ps.add(info, BorderLayout.CENTER);
+		key = new CompoundKey(this);
+		key.setAlignmentX(CENTER_ALIGNMENT);
+		ps.add(key);
+		p.add(ps);
+		
 		p.add(new JLabel(" "));
 		JPanel p1 = new JPanel();
 		JPanel p2 = new JPanel();
@@ -224,16 +234,26 @@ public class ControlPanel extends JPanel implements ActionListener, ItemListener
 		//p4.setLayout(new BoxLayout(p4, BoxLayout.X_AXIS));
 		//p4.add(new JLabel("Set temperature"));
 		
+
+		
 		
 		this.setLayout(new BorderLayout());
 		this.add(p, BorderLayout.NORTH);
 	}
 	
+	public void repaintKey() {
+		key.repaint();
+	}
+	
 	public void setText(String text) {
-		info.setText(text);
+		key.setText(text);
 	}
 
 	Random rand = new Random();
+	
+	public KineticsSimulator getSim() {
+		return sim;
+	}
 	
 	//This code controls the buttons in the control panel
 	@Override

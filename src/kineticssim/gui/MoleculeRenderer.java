@@ -2,6 +2,7 @@ package kineticssim.gui;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.ConcurrentModificationException;
@@ -109,14 +110,14 @@ public class MoleculeRenderer extends JPanel
 		/*********
 		 * ******
 		 */
-		simulation.getHistogram().draw(ggraph, simulation, frame.getHistogramheight());
+		simulation.getHistogram().draw((Graphics2D) ggraph, simulation, frame.getHistogramheight());
 		
 		Graphics gplot = img_graph.getGraphics();
 		gplot.setColor(Color.BLACK);
 		gplot.fillRect(0, 0, img_graph.getWidth(), img_graph.getHeight());
 		
 		for (DataCollector d: simulation.getGraphs()) {
-			d.graph(gplot, 0, 0, img_graph.getWidth(), img_graph.getHeight());
+			d.graph((Graphics2D)gplot, 0, 0, img_graph.getWidth(), img_graph.getHeight());
 		}
 		
 		

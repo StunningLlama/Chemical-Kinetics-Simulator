@@ -17,18 +17,19 @@ public class BimolecularSynthesis extends Reaction {
 	public Compound rb;
 	
 	public Compound prod;
+
+	private double collisionprob;
 	
-	public double preExpFactor;
-	
-	public BimolecularSynthesis(double ac, double dH) {
+	public BimolecularSynthesis(double ac, double dH, double prob) {
 		super(ac, dH);
+		collisionprob = prob;
 	}
 
 	//Only activates reaction if the kinetic energy is greater than activation energy
 	public boolean checkCollisionSucesss(Particle a, Particle b, PhysicsSimulation s, Vector vCOM, Vector pCOM, double fwdenergy, double energy) {
 		if (a.getCompound().equals(ra) && b.getCompound().equals(rb) || a.getCompound().equals(rb) && b.getCompound().equals(ra))
 		{
-			if (fwdenergy > this.activationenergyfwd) {
+			if (fwdenergy > this.activationenergyfwd && Math.random() < collisionprob) {
 				//System.out.println("init " + ((velA.magsq()*a.getMass()*0.5 + velB.magsq()*b.getMass()*0.5)));
 				//System.out.println("en " + energy);
 				if (energy-this.deltaH < 0) {

@@ -24,8 +24,8 @@ public class CompoundReaction implements Serializable {
 	private List<Compound> products;
 	private double dH;
 	private double eA;
-	private double kfwd;
-	private double kback;
+	private double rfwd;
+	private double rback;
 	private boolean reversible;
 	
 	public double getDeltaH() {
@@ -55,8 +55,8 @@ public class CompoundReaction implements Serializable {
 	public CompoundReaction() {
 		reactants = new ArrayList<Compound>();
 		products = new ArrayList<Compound>();
-		kfwd = 1E12;
-		kback = 1E12;
+		rfwd = 1E11;
+		rback = 1E11;
 		eA = 1E-19;
 		dH = -1E-19;
 		reversible = true;
@@ -71,27 +71,27 @@ public class CompoundReaction implements Serializable {
 	}
 	
 	public double getRateFwd() {
-		return kfwd;
+		return rfwd;
 	}
 	
 	public double getRateBack() {
-		return kback;
+		return rback;
 	}
 	
 	public void setRateFwd(double k) {
-		kfwd = k;
+		rfwd = k;
 	}
 	
 	public void setRateBack(double k) {
-		kback = k;
+		rback = k;
 	}
 	
 
 	public void toFileData(PrintWriter w, List<Compound> compounds) {
 		w.println(Double.toString(dH));
 		w.println(Double.toString(eA));
-		w.println(Double.toString(kfwd));
-		w.println(Double.toString(kback));
+		w.println(Double.toString(rfwd));
+		w.println(Double.toString(rback));
 		w.println(Boolean.toString(reversible));
 		w.println(compounds.indexOf(reactants.get(0)));
 		if (reactants.size() > 1)
@@ -109,8 +109,8 @@ public class CompoundReaction implements Serializable {
 		CompoundReaction r = new CompoundReaction();
 		r.dH = Double.valueOf(in.nextLine());
 		r.eA = Double.valueOf(in.nextLine());
-		r.kfwd = Double.valueOf(in.nextLine());
-		r.kback = Double.valueOf(in.nextLine());
+		r.rfwd = Double.valueOf(in.nextLine());
+		r.rback = Double.valueOf(in.nextLine());
 		r.reversible = Boolean.valueOf(in.nextLine());
 		r.reactants.add(compounds.get(Integer.valueOf(in.nextLine())));
 		String s = in.nextLine();
@@ -120,6 +120,7 @@ public class CompoundReaction implements Serializable {
 		s = in.nextLine();
 		if (!s.equalsIgnoreCase("N"))
 			r.products.add(compounds.get(Integer.valueOf(s)));
+		
 		return r;
 	}
 	
@@ -152,7 +153,7 @@ public class CompoundReaction implements Serializable {
 		
 		if (reactants.size() == 1 && products.size() == 1) {
 			
-			UnimolecularTransformation LHdecomp = new UnimolecularTransformation(0, -eA+dH, kfwd);
+			UnimolecularTransformation LHdecomp = new UnimolecularTransformation(0, -eA+dH, rfwd);
 			LHdecomp.prod = products.get(0);
 			LHdecomp.c = reactants.get(0);
 			
@@ -163,7 +164,7 @@ public class CompoundReaction implements Serializable {
 			l.add(LHeq);
 			
 			if (reversible) {
-				UnimolecularTransformation LHdecomp2 = new UnimolecularTransformation(0, -eA, kback);
+				UnimolecularTransformation LHdecomp2 = new UnimolecularTransformation(0, -eA, rback);
 				LHdecomp2.prod = reactants.get(0);
 				LHdecomp2.c = products.get(0);
 
@@ -176,26 +177,27 @@ public class CompoundReaction implements Serializable {
 			}
 		} if (reactants.size() == 1 && products.size() == 2) {
 			if (reversible) {
-				BimolecularSynthesis bc = new BimolecularSynthesis(eA-dH, -dH);
+				BimolecularSynthesis bc = new BimolecularSynthesis(eA-dH, -dH, rback);
 				bc.ra = products.get(0);
 				bc.rb = products.get(1);
 				bc.prod = reactants.get(0);
 				l.add(bc);
 			}
 
-			UnimolecularDecomposition LHdecomp = new UnimolecularDecomposition(0, -eA+dH, kback);
+			UnimolecularDecomposition LHdecomp = new UnimolecularDecomposition(0, -eA+dH, rfwd);
 			LHdecomp.prodA = products.get(0);
 			LHdecomp.prodB = products.get(1);
 			LHdecomp.c = reactants.get(0);
 			LHdecomp.calcReducedMass();
 
 			LindemannHinshelwoodEq LHeq = new LindemannHinshelwoodEq(eA, eA);
-
+			LHeq.A = LHdecomp.c;
+			
 			l.add(LHdecomp);
 			l.add(LHeq);
 		} if (reactants.size() == 2 && products.size() == 1) {
 
-			BimolecularSynthesis bc = new BimolecularSynthesis(eA, dH);
+			BimolecularSynthesis bc = new BimolecularSynthesis(eA, dH, rfwd);
 			bc.ra = reactants.get(0);
 			bc.rb = reactants.get(1);
 			bc.prod = products.get(0);
@@ -203,7 +205,7 @@ public class CompoundReaction implements Serializable {
 
 
 			if (reversible) {
-				UnimolecularDecomposition LHdecomp = new UnimolecularDecomposition(0, -eA, kback);
+				UnimolecularDecomposition LHdecomp = new UnimolecularDecomposition(0, -eA, rback);
 				LHdecomp.prodA = reactants.get(0);
 				LHdecomp.prodB = reactants.get(1);
 				LHdecomp.c = products.get(0);
@@ -217,7 +219,7 @@ public class CompoundReaction implements Serializable {
 			}
 
 		} if (reactants.size() == 2 && products.size() == 2) {
-			BimolecularReaction r1 = new BimolecularReaction(eA, dH);
+			BimolecularReaction r1 = new BimolecularReaction(eA, dH, rfwd);
 			r1.ra = reactants.get(0);
 			r1.rb = reactants.get(1);
 			r1.prodA = products.get(0);
@@ -226,7 +228,7 @@ public class CompoundReaction implements Serializable {
 			l.add(r1);
 
 			if (reversible) {
-				BimolecularReaction r2 = new BimolecularReaction(eA-dH, -dH);
+				BimolecularReaction r2 = new BimolecularReaction(eA-dH, -dH, rback);
 				r2.prodA = reactants.get(0);
 				r2.prodB = reactants.get(1);
 				r2.ra = products.get(0);

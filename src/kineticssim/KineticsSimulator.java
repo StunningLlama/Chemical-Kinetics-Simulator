@@ -45,6 +45,7 @@ public class KineticsSimulator {
 	}
 	
 	private ReactionManager rm;
+	private double energyConversionFactor = PhysicsSimulation.AVOGADRO / 1000;
 	
 	public KineticsSimulator() {
 		init();
@@ -72,10 +73,10 @@ public class KineticsSimulator {
 			addRandomParticles(1000, NO2, 800);
 
 			r = new CompoundReaction();
-			r.setDeltaH(-1E-19);
-			r.setActivationEnergy(1E-19);
-			r.setRateFwd(1E12/31);
-			r.setRateBack(1E12/31);
+			r.setDeltaH(-60/energyConversionFactor);
+			r.setActivationEnergy(60/energyConversionFactor);
+			r.setRateFwd(1);
+			r.setRateBack(3.2E10);
 			r.getreactants().add(NO2);
 			r.getreactants().add(NO2);
 			r.getproducts().add(N2O4);

@@ -1,7 +1,9 @@
 package kineticssim.util;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 
 import kineticssim.PhysicsSimulation;
 
@@ -50,7 +52,7 @@ public class Histogram {
 	}
 	
 	//Draws the histogram onto a Graphics object
-	public void draw(Graphics ggraph, PhysicsSimulation simulation, int graphheight) {
+	public void draw(Graphics2D ggraph, PhysicsSimulation simulation, int graphheight) {
 		int max = 10;
 		for (int i = 0; i < histogramsize; i++) {
 			if (histogram[i] > max) {

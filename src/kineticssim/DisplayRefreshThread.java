@@ -44,6 +44,7 @@ public class DisplayRefreshThread implements Runnable {
 			
 			if (n%2 == 1) {
 				gui.getSimulator().getPhysicsSimulation().updateGUI();
+				gui.getControlPanel().repaintKey();
 			}
 			
 			gui.repaint();

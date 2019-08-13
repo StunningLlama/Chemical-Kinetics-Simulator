@@ -1,7 +1,9 @@
 package kineticssim.util;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 
 //The data collector collects data and displays it in a line graph over time
 public class DataCollector {
@@ -33,8 +35,9 @@ public class DataCollector {
 	}
 	
 	//This function draws the graph onto a Graphics g
-	public void graph(Graphics g, int xA, int yA, int xB, int yB) {
+	public void graph(Graphics2D g, int xA, int yA, int xB, int yB) {
 		g.setColor(c);
+		//g.setStroke(new BasicStroke(2));
 		for (int i = 0; i < index - 1; i++) {
 			int x1 = xA + (int)(((timeTable[i] - timeTable[0])/xscale/size) * (xB-xA));
 			int x2 = xA + (int)(((timeTable[i+1] - timeTable[0])/xscale/size) * (xB-xA));

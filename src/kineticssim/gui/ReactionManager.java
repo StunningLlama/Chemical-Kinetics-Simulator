@@ -41,6 +41,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import kineticssim.Compound;
+import kineticssim.Examples;
 import kineticssim.PhysicsSimulation;
 import kineticssim.reactions.CompoundReaction;
 
@@ -97,6 +98,9 @@ public class ReactionManager extends JFrame implements ActionListener, ListSelec
 	JLabel text7;
 	JLabel text8;
 	
+	JLabel text12;
+	JLabel text13;
+	
 	JCheckBox chk;
 	
 	JMenuBar mb;
@@ -134,13 +138,17 @@ public class ReactionManager extends JFrame implements ActionListener, ListSelec
 		mb = new JMenuBar();
 		JMenu jm = new JMenu("File");
 		mia = new JMenuItem("Save");
-		mib = new JMenuItem("Load");
+		mib = new JMenuItem("Open");
 		mic = new JMenuItem("About");
 		min = new JMenuItem("New");
 		jm.add(mia);
 		jm.add(min);
-		jm.add(mic);
 		jm.add(mib);
+		
+		Examples ex = new Examples(this);
+		ex.addToMenu(jm);
+		jm.add(mic);
+		
 		mia.addActionListener(this);
 		mib.addActionListener(this);
 		mic.addActionListener(this);
@@ -160,7 +168,7 @@ public class ReactionManager extends JFrame implements ActionListener, ListSelec
 		cr.addItem("A + B -> C + D");
 		cr.setAlignmentX(LEFT_ALIGNMENT);
 
-		cr.setSelectedIndex(3);
+		cr.setSelectedIndex(0);
 		cr.addItemListener(this);
 		//u2192
 		//cr.setFont(new Font("Serif", Font.PLAIN, 40));
@@ -195,12 +203,14 @@ public class ReactionManager extends JFrame implements ActionListener, ListSelec
 		text10.setAlignmentX(LEFT_ALIGNMENT);
 		JLabel text11 = new JLabel("Delta H (kJ/mol)");
 		text11.setAlignmentX(LEFT_ALIGNMENT);
-		JLabel text12 = new JLabel("K forward");
+		text12 = new JLabel("K forward");
 		text12.setAlignmentX(LEFT_ALIGNMENT);
-		JLabel text13 = new JLabel("K backward");
+		text13 = new JLabel("K backward");
 		text13.setAlignmentX(LEFT_ALIGNMENT);
 		chk = new JCheckBox("Reversible");
+		chk.addActionListener(this);
 		chk.setAlignmentX(LEFT_ALIGNMENT);
+		chk.setSelected(true);
 		
 		tte = new JTextField();
 		tte.setAlignmentX(LEFT_ALIGNMENT);
@@ -210,7 +220,6 @@ public class ReactionManager extends JFrame implements ActionListener, ListSelec
 		ttg.setAlignmentX(LEFT_ALIGNMENT);
 		tth = new JTextField();
 		tth.setAlignmentX(LEFT_ALIGNMENT);
-		
 		JPanel panel1 = new JPanel();
 		panel1.setLayout(new BoxLayout(panel1, BoxLayout.Y_AXIS));
 		reactionpanel.setLayout(new BorderLayout());
@@ -225,7 +234,7 @@ public class ReactionManager extends JFrame implements ActionListener, ListSelec
 		//td.setPreferredSize(new Dimension(200, 32));
 		panel1.add(text9);
 		panel1.add(cr);
-		panel1.add(newFiller(200, 4));
+		panel1.add(newFiller(220, 4));
 		panel1.add(text5);
 		panel1.add(ca);
 		panel1.add(newFiller(10, 4));
@@ -496,21 +505,7 @@ public class ReactionManager extends JFrame implements ActionListener, ListSelec
 
 						Scanner in = new Scanner(fileIn);
 
-						compounds.clear();
-						reactions.clear();
-
-						int size = Integer.valueOf(in.nextLine());
-						for (int i = 0; i < size; i++) {
-							compounds.add(Compound.fromFileData(in));
-						}
-
-						size = Integer.valueOf(in.nextLine());
-
-						for (int i = 0; i < size; i++) {
-							reactions.add(CompoundReaction.fromFileData(in, compounds));
-						}
-
-						in.close();
+						loadFile(in);
 					}
 
 					fileIn.close();
@@ -532,7 +527,29 @@ public class ReactionManager extends JFrame implements ActionListener, ListSelec
 			reactions.clear();
 			this.updateCompList();
 			this.updateRList();
+		} else if (e.getSource() == chk) {
+			updateBlankBoxes();
 		}
+	}
+	
+	public void loadFile(Scanner in) {
+		compounds.clear();
+		reactions.clear();
+
+		int size = Integer.valueOf(in.nextLine());
+		for (int i = 0; i < size; i++) {
+			compounds.add(Compound.fromFileData(in));
+		}
+
+		size = Integer.valueOf(in.nextLine());
+
+		for (int i = 0; i < size; i++) {
+			reactions.add(CompoundReaction.fromFileData(in, compounds));
+		}
+
+		in.close();
+		l.clearSelection();
+		l2.clearSelection();
 	}
 	
 	//Set the awt list to reflect changes in the internal compound list
@@ -637,8 +654,26 @@ public class ReactionManager extends JFrame implements ActionListener, ListSelec
 			r.setActivationEnergy(Double.valueOf(tte.getText())/energyConversionFactor);
 			r.setDeltaH(Double.valueOf(ttf.getText())/energyConversionFactor);
 			r.setRateFwd(Double.valueOf(ttg.getText()));
+			
+			boolean checked = (chk.getSelectedObjects() != null);
+			
+			try {
 			r.setRateBack(Double.valueOf(tth.getText()));
-			r.setReversible(chk.getSelectedObjects() != null);
+			} catch(NumberFormatException e) {
+				if (checked)
+					JOptionPane.showMessageDialog(null, "Error: Invalid number");
+				else
+					r.setRateBack(1);
+				
+			} catch(NullPointerException e) {
+				if (checked)
+					JOptionPane.showMessageDialog(null, "Error: Invalid number");
+				else
+					r.setRateBack(1);
+				
+			}
+			
+			r.setReversible(checked);
 		}
 		catch (ArrayIndexOutOfBoundsException e) {
 			JOptionPane.showMessageDialog(null, "Error: Invalid compound");
@@ -692,6 +727,7 @@ public class ReactionManager extends JFrame implements ActionListener, ListSelec
 		}
 		
 		cr.setSelectedIndex(ind);
+		lastselection = ind;
 		
 		
 		//Gray out textboxes if the reaction has less reactants/products
@@ -700,18 +736,32 @@ public class ReactionManager extends JFrame implements ActionListener, ListSelec
 			text6.setEnabled(true);
 			if (r.getreactants().size() > 1)
 				cb.setSelectedIndex(getId(r.getreactants().get(1)) + 1);
+			text12.setText("Collision prob. (Steric factor)");
+			
 		} else {
 			cb.setEnabled(false);
 			text6.setEnabled(false);
+			text12.setText("Rate constant");
 		}
 		if (ind == 2 || ind == 3) {
 			cd.setEnabled(true);
 			text8.setEnabled(true);
 			if (r.getproducts().size() > 1)
 				cd.setSelectedIndex(getId(r.getproducts().get(1)) + 1);
+			text13.setText("Collision prob. (Steric factor)");
 		} else {
 			cd.setEnabled(false);
 			text8.setEnabled(false);
+			text13.setText("Rate constant");
+		}
+		
+		if (r.isReversible()) {
+			text13.setEnabled(true);
+			tth.setEnabled(true);
+		}
+		else {
+			text13.setEnabled(false);
+			tth.setEnabled(false);
 		}
 		
 		tte.setText("" + r.getActivationEnergy()*energyConversionFactor);
@@ -727,32 +777,68 @@ public class ReactionManager extends JFrame implements ActionListener, ListSelec
 	@Override
 	public void itemStateChanged(ItemEvent e) {
 		 if (e.getSource() == cr) {
-				
-
-				int ind = cr.getSelectedIndex();
-
-
-				//Gray out textboxes if the reaction has less reactants/products
-				if (ind == 1 || ind == 3) {
-					cb.setEnabled(true);
-					text6.setEnabled(true);
-				} else {
-					cb.setEnabled(false);
-					text6.setEnabled(false);
-					cb.setSelectedIndex(0);
-				}
-				if (ind == 2 || ind == 3) {
-					cd.setEnabled(true);
-					text8.setEnabled(true);
-				} else {
-					cd.setEnabled(false);
-					text8.setEnabled(false);
-					cd.setSelectedIndex(0);
-				}
-				
-				
-			}
+			 updateBlankBoxes();
+		 }
 	}
+		 
+	private void updateBlankBoxes() {
+
+		int ind = cr.getSelectedIndex();
+
+
+		//Gray out textboxes if the reaction has less reactants/products
+		if (ind == 1 || ind == 3) {
+			cb.setEnabled(true);
+			text6.setEnabled(true);
+			text12.setText("Collision prob. (Steric factor)");
+			
+			if (lastselection == 0 || lastselection == 2) {
+				ttg.setText(Double.toString(1));
+			}
+		} else {
+			cb.setEnabled(false);
+			text6.setEnabled(false);
+			cb.setSelectedIndex(0);
+			text12.setText("Rate constant");
+			
+			if (lastselection == 1 || lastselection == 3) {
+				ttg.setText(Double.toString(1E11));
+			}
+		}
+		if (ind == 2 || ind == 3) {
+			cd.setEnabled(true);
+			text8.setEnabled(true);
+			text13.setText("Collision prob. (Steric factor)");
+			
+			if (lastselection == 0 || lastselection == 1) {
+				tth.setText(Double.toString(1));
+			}
+		} else {
+			cd.setEnabled(false);
+			text8.setEnabled(false);
+			cd.setSelectedIndex(0);
+			text13.setText("Rate constant");
+			
+			if (lastselection == 2 || lastselection == 3) {
+				tth.setText(Double.toString(1E11));
+			}
+		}
+		
+
+		if (chk.getSelectedObjects() != null) {
+			text13.setEnabled(true);
+			tth.setEnabled(true);
+		}
+		else {
+			text13.setEnabled(false);
+			tth.setEnabled(false);
+		}
+
+		
+		lastselection = ind;
+	}
+	
+	int lastselection = 1;
 
 	@Override
 	public void valueChanged(ListSelectionEvent e) {

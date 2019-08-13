@@ -170,8 +170,12 @@ public class PhysicsSimulation {
 					a = molecules.get(i);
 					b = molecules.get(j);
 					if (a.distanceSquaredTo(b) < (a.getRadius() + b.getRadius())*((a.getRadius() + b.getRadius()))) {
-
+						//try {
 						collide(a, b);
+						//}
+						//catch (RuntimeException e) {
+						//	System.out.print(a + " and " + b);
+						//}
 					}
 				}
 			}
