@@ -280,6 +280,8 @@ public class ControlPanel extends JPanel implements ActionListener, ItemListener
 				int toremove = (Integer)number.getValue();
 				List<Particle> col = sim.getPhysicsSimulation().particlecount.get(comp);
 				int sizeinit = col.size();
+				if (toremove > col.size())
+					toremove = col.size();
 				if (toremove > 0 && toremove <= col.size()) {
 					for (int i = sizeinit; i > (sizeinit - toremove); i--) {
 						int rr = rand.nextInt(i);
