@@ -56,7 +56,7 @@ public class CompoundReaction implements Serializable {
 		reactants = new ArrayList<Compound>();
 		products = new ArrayList<Compound>();
 		rfwd = 1E11;
-		rback = 1E11;
+		rback = 1;
 		eA = 1E-19;
 		dH = -1E-19;
 		reversible = true;

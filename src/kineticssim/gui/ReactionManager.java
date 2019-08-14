@@ -3,6 +3,7 @@ package kineticssim.gui;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.FileDialog;
 import java.awt.Panel;
@@ -16,6 +17,8 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -108,6 +111,7 @@ public class ReactionManager extends JFrame implements ActionListener, ListSelec
 	JMenuItem mib;
 	JMenuItem mic;
 	JMenuItem min;
+	JMenuItem mih;
 	
 	public java.util.List<CompoundReaction> reactions;
 	public java.util.List<Compound> compounds;
@@ -141,18 +145,24 @@ public class ReactionManager extends JFrame implements ActionListener, ListSelec
 		mib = new JMenuItem("Open");
 		mic = new JMenuItem("About");
 		min = new JMenuItem("New");
+		mih = new JMenuItem("Help");
 		jm.add(mia);
 		jm.add(min);
 		jm.add(mib);
+		jm.addSeparator();
 		
 		Examples ex = new Examples(this);
 		ex.addToMenu(jm);
+		
+		jm.addSeparator();
 		jm.add(mic);
+		jm.add(mih);
 		
 		mia.addActionListener(this);
 		mib.addActionListener(this);
 		mic.addActionListener(this);
 		min.addActionListener(this);
+		mih.addActionListener(this);
 		mb.add(jm);
 		
 		this.setJMenuBar(mb);
@@ -379,7 +389,7 @@ public class ReactionManager extends JFrame implements ActionListener, ListSelec
 		l2.addListSelectionListener(this);
 		this.add(tabbedPane);
 		this.setSize(720, 720);
-		this.setVisible(false);
+		this.setVisible(true);
 		
 		compounds = new ArrayList<Compound>();
 	}
@@ -529,6 +539,13 @@ public class ReactionManager extends JFrame implements ActionListener, ListSelec
 			this.updateRList();
 		} else if (e.getSource() == chk) {
 			updateBlankBoxes();
+		} else if (e.getSource() == mih) {
+			try {
+				Desktop.getDesktop().browse(new URI("https://github.com/thepowderguy/Chemical-Kinetics-Simulator/blob/master/README.md"));
+			} catch (IOException | URISyntaxException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 		}
 	}
 	
@@ -748,11 +765,11 @@ public class ReactionManager extends JFrame implements ActionListener, ListSelec
 			text8.setEnabled(true);
 			if (r.getproducts().size() > 1)
 				cd.setSelectedIndex(getId(r.getproducts().get(1)) + 1);
-			text13.setText("Collision prob. (Steric factor)");
+			text13.setText("Reverse Collision prob. (Steric factor)");
 		} else {
 			cd.setEnabled(false);
 			text8.setEnabled(false);
-			text13.setText("Rate constant");
+			text13.setText("Reverse Rate constant");
 		}
 		
 		if (r.isReversible()) {
