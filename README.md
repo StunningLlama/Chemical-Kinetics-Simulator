@@ -61,10 +61,14 @@ To load an example, click on the name of the example and press "reset".
 This is the default simulation upon opening the application, showing the reaction of 2NO2 <-> N2O4 (delta H = -60 kJ/mol). You can use it to demonstrate le chatlier's principle. Since dH (delta H) is negative, increasing the temperature will shift equilibrium to the reactants - and this can be seen in the concentration graph.
 
 ### Explosion
-This is a simulation of an explosion. When the explosive breaks into two parts, it releases a lot of energy which causes more explosives to break down. For a demonstration, set the temperature slider to ~2000K and add a 400 particles of explosives. The temperature will be seen to increase;
+This is a simulation of an explosion. When the explosive breaks into two parts, it releases a lot of energy which causes more explosives to break down. For a demonstration, set the temperature slider to ~1500K and add a 400 particles of explosives. The temperature will be seen to increase;
 
 ### Decomposition of ozone
 This simulates the depletion of ozone in the atmosphere catalyzed by CFCs. To demonstrate how CFCs can degrade ozone, first add only equal parts of ozone and diatomic oxygen to the simulation. You will notice that the reaction O3 <-> O + O2 is in equilibrium. THe splitting of O3 when radiation hits it is simulated. Then add some chlorine radicals, which are formed when CFCs break apart in the atmosphere. The concentration of O3 will steadily decrease because of the following reactions:\
 Cl + O3 -> ClO + O2\
 ClO + O -> Cl + O2\
-The chlorine radical is thus regenerated and can continue to break apart ozone.
+The chlorine radical is thus regenerated and can continue to break apart ozone.\
+<br />
+**Notes:**
+- The temperature should be set to 2000K
+- You may need to increase the size of the simulation
